@@ -137,16 +137,20 @@ asr.onresult = function(event){
     }
     resultOutput.innerHTML = output + output_not_final;
 }
+// ウィンドウのロードが完了したときのイベントハンドラ
+window.addEventListener('load', function() {
+    bgm.play()
+}
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
-    bgm.stop
+    bgm.stop()
     asr.start();
 })
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
-    bgm.start
+    bgm.play();
     asr.abort()
     asr.stop();
 })
