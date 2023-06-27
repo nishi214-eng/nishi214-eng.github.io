@@ -140,13 +140,11 @@ asr.onresult = function(event){
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
-    bgm.play(); // BGMの一時停止
     asr.start();
 })
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
-    bgm.stop(); // BGMの再生
     asr.abort()
     asr.stop();
 })
