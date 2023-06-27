@@ -126,7 +126,6 @@ asr.onresult = function(event){
         // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 
         tts.onend = function(event){
-            bgm.play(); // BGMの再開
             asr.start(); // 音声認識を再開
         }
 
@@ -145,7 +144,7 @@ startButton.addEventListener('click', function() {
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
-    bgm.play();
+   
     asr.abort()
     asr.stop();
 })
