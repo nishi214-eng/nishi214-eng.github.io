@@ -51,7 +51,7 @@
 </p>
 
 <script>
-  
+
 const startButton = document.querySelector('#startButton'); // 開始ボタン
 const stopButton = document.querySelector('#stopButton'); // 停止ボタン
 const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
@@ -82,7 +82,7 @@ let output = ''; // 出力
 // 応答の定義（ハッシュ）    
 var response = {
     "あなたは誰ですか":"わたしはアレクサではありません",
-    "何歳":"え、わたし、何歳にみえますか",
+    "何歳ですか":"え、わたし、何歳にみえますか",
     "元気":"元気ですよー",
     "食べ物":"焼肉です",
     "サークル":"入っていません",
@@ -140,13 +140,17 @@ asr.onresult = function(event){
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
     asr.start();
+    if (!bgm.paused) {
+      bgm.pause();
+    }
 })
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
-   
-    asr.abort()
-    asr.stop();
+    asr.abort();
+    if (bgm.paused) {
+      bgm.play();
+    }
 })
 
 </script>
