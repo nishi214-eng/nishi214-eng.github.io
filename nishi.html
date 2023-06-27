@@ -55,7 +55,7 @@
 const startButton = document.querySelector('#startButton'); // 開始ボタン
 const stopButton = document.querySelector('#stopButton'); // 停止ボタン
 const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
-
+const bgm = new Audio('Digitalize.mp3');
 
 if (!'SpeechSynthesisUtterance' in window) {
     alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
@@ -82,7 +82,7 @@ let output = ''; // 出力
 // 応答の定義（ハッシュ）    
 var response = {
     "あなたは誰ですか":"わたしはアレクサではありません",
-    "何歳ですか":"え、わたし、何歳にみえますか",
+    "何歳":"え、わたし、何歳にみえますか",
     "元気":"元気ですよー",
     "食べ物":"焼肉です",
     "サークル":"入っていません",
@@ -126,6 +126,7 @@ asr.onresult = function(event){
         // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 
         tts.onend = function(event){
+            bgmAudio.play(); // BGMの再開
             asr.start(); // 音声認識を再開
         }
 
@@ -139,40 +140,17 @@ asr.onresult = function(event){
 
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
+    bgmAudio.pause(); // BGMの一時停止
     asr.start();
 })
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
+    bgmAudio.play(); // BGMの再生
     asr.abort()
     asr.stop();
 })
-// Live2Dモデルの表示（サンプル）
-function loadLive2DModel() {
-  // モデルのファイルパス
-  var modelPath = 'C/Users/User/Downloads/miku/miku_t01.cmo3';
 
-  // モデルの読み込みと初期化
-  var live2dModel = new LAppModel();
-  live2dModel.load(modelPath);
-
-  // 描画領域の設定
-  var canvas = document.getElementById('live2d_canvas');
-  var width = canvas.clientWidth;
-  var height = canvas.clientHeight;
-  canvas.width = width;
-  canvas.height = height;
-
-  // モデルの描画
-  var live2dContext = new LAppLive2DManager();
-  live2dContext.init(canvas);
-  live2dContext.start(live2dModel);
-}
-
-// ページのロードが完了したらLive2Dモデルを表示
-window.addEventListener('load', function() {
-  loadLive2DModel();
-});
 </script>
 
 </body>
