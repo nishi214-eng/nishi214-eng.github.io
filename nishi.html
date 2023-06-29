@@ -51,11 +51,14 @@
 </p>
 
 <script>
+const URL = "https://jlp.yahooapis.jp/NLUService/V2/analyze?appid="; // APIのリクエストURL
+const APPID = "dj00aiZpPUtnWmVVRWQ3akpZQiZzPWNvbnN1bWVyc2VjcmV0Jng9Yzc-"; // あなたのアプリケーションID
+const queryURL = URL + APPID;
 
 const startButton = document.querySelector('#startButton'); // 開始ボタン
 const stopButton = document.querySelector('#stopButton'); // 停止ボタン
 const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
-const bgm = new Audio('Digitalize.mp3');
+
 
 if (!'SpeechSynthesisUtterance' in window) {
     alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
@@ -115,22 +118,62 @@ asr.onresult = function(event){
             }
         });
         if(typeof answer == 'undefined'){
-            answer = "理解しかねます";
-        }
-
-        output += transcript + " => " + answer + '<br>'; // 応答結果の出力
+          var postdata = {
+          "id": "1234-1", // JSON-RPC2.0 id、値は任意で、指定した値がレスポンスのidになる。
+          "jsonrpc" : "2.0", // APIで固定
+          "method" : "jlp.nluservice.analyze", // APIで固定
+          "params" : { "q" : transcript }, // 解析対象のテキスト 
+        };
+		    var jsondata = JSON.stringify(postdata);
+	
+        const request = new XMLHttpRequest();
+        request.open('POST', queryURL, true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.responseType = 'json'; // レスポンスはJSON形式に変換
+        
+        // HTTPの状態が変化したときのイベントハンドラ
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              // readyState == 4 操作完了
+              // status == 200 リクエスト成功（HTTPレスポンス）
               
-    
-        tts.text = answer;
-        speechSynthesis.speak(tts); // 再生
-        // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+            let res = this.response; // 結果はJSON形式
 
-        tts.onend = function(event){
-            asr.start(); // 音声認識を再開
+            Object.keys(res.result).forEach(function (key) {
+              console.log(key + ": " + res.result[key])
+            });
+          
+            // METHOD が SAY のときのみ
+            if(res.result.METHOD == "SAY"){
+              var answer = res.result.PARAM_TEXT_TTS || res.result.PARAM_TEXT;
+              tts.text = answer;
+
+                // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+                tts.onend = function(event){
+                    asr.start(); // 音声認識を再開
+                }
+              
+              output += transcript + ' => ' + answer + '<br>';
+              resultOutput.innerHTML = output;
+                speechSynthesis.speak(tts); // 再生
+            }
+
+            output += transcript + " => " + answer + '<br>'; // 応答結果の出力
+                  
+        
+            tts.text = answer;
+            speechSynthesis.speak(tts); // 再生
+            // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+
+            tts.onend = function(event){
+                asr.start(); // 音声認識を再開
+            }
+
+            speechSynthesis.speak(tts); // 再生
+          }
         }
-
-        speechSynthesis.speak(tts); // 再生
-      }
+        // HTTPリクエストの実行
+		    request.send(jsondata);
     } else { // 結果がまだ未確定のとき
         output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
     }
@@ -140,19 +183,39 @@ asr.onresult = function(event){
 // 開始ボタンのイベントハンドラ
 startButton.addEventListener('click', function() {
     asr.start();
-    if (!bgm.paused) {
-      bgm.pause();
-    }
 })
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
-    asr.abort();
-    if (bgm.paused) {
-      bgm.play();
-    }
+    asr.abort()
+    asr.stop();
 })
+// Live2Dモデルの表示（サンプル）
+function loadLive2DModel() {
+  // モデルのファイルパス
+  var modelPath = 'C/Users/User/Downloads/miku/miku_t01.cmo3';
 
+  // モデルの読み込みと初期化
+  var live2dModel = new LAppModel();
+  live2dModel.load(modelPath);
+
+  // 描画領域の設定
+  var canvas = document.getElementById('live2d_canvas');
+  var width = canvas.clientWidth;
+  var height = canvas.clientHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  // モデルの描画
+  var live2dContext = new LAppLive2DManager();
+  live2dContext.init(canvas);
+  live2dContext.start(live2dModel);
+}
+
+// ページのロードが完了したらLive2Dモデルを表示
+window.addEventListener('load', function() {
+  loadLive2DModel();
+});
 </script>
 
 </body>
