@@ -1,222 +1,250 @@
 <html lang="ja">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Content-Style-Type" content="text/css">
-<meta http-equiv="Content-Script-Type" content="text/javascript">
-<title>Spoken Dialog by Javascript</title>
-<style>
-  #resultOutput{
-    font-size: 48px;
-  }
-  #startButton{
-    background-color: blue;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    margin-right: 10px;
-    font-size: 48px;
-  }
-  #stopButton {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    margin-right: 10px;
-    font-size: 48px;
-  }
-  #live2d_canvas {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 100;
-    width: 200px;
-    height: 200px;
-  }
-</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <title>Spoken Dialog by Javascript</title>
+  <style>
+    #resultOutput {
+      font-size: 48px;
+    }
+    #startButton {
+      background-color: blue;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+      font-size: 48px;
+    }
+    #stopButton {
+      background-color: red;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+      font-size: 48px;
+    }
+  </style>
 </head>
 <body>
+  <h1>60266214西優太-課題：音声対話</h1>
+  <p>
+    <button id="startButton">start</button>
+    <button id="stopButton">stop</button>
+  </p>
+  <p>
+    <div id="resultOutput"></div>
+  </p>
+  <script>
+    const URL = "https://jlp.yahooapis.jp/NLUService/V2/analyze?appid="; // APIのリクエストURL
+    const APPID = "dj00aiZpPUtnWmVVRWQ3akpZQiZzPWNvbnN1bWVyc2VjcmV0Jng9Yzc-"; // あなたのアプリケーションID
+    const queryURL = URL + APPID;
 
-<h1>60266214西優太-課題：音声対話</h1>
+    const startButton = document.querySelector('#startButton'); // 開始ボタン
+    const stopButton = document.querySelector('#stopButton'); // 停止ボタン
+    const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
 
-<p>
-<button id="startButton">start</button>
-<button id="stopButton">stop</button>
-</p>
+    if (!'SpeechSynthesisUtterance' in window) {
+      alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
+    }
+    const tts = new SpeechSynthesisUtterance(); // TTSインスタンスを生成
+    tts.lang = "ja-JP"; // 言語(日本語)、英語の場合はen-US
 
-<p>
-<div id="resultOutput"></div>
-</p>
+    // Google日本語の音声が結構かわいいので変更
+    // Google日本語の音声を取得する関数
+    function getGoogleJapaneseVoice() {
+    // 音声リストを取得
+    const voices = window.speechSynthesis.getVoices();
+    // Google日本語の音声を探す
+    for (let voice of voices) {
+      if (voice.name === "Google 日本語" && voice.lang === "ja-JP") {
+        return voice; // 見つかったらvoiceを返す
+      }
+    }
+      return null; // 見つからなかったらnullを返す
+    }
+    // 音声リストが変更されたときに実行する関数
+    window.speechSynthesis.onvoiceschanged = function () {
+        // 実行
+        tts.voice = getGoogleJapaneseVoice();
+    };
 
-<script>
-const URL = "https://jlp.yahooapis.jp/NLUService/V2/analyze?appid="; // APIのリクエストURL
-const APPID = "dj00aiZpPUtnWmVVRWQ3akpZQiZzPWNvbnN1bWVyc2VjcmV0Jng9Yzc-"; // あなたのアプリケーションID
-const queryURL = URL + APPID;
 
-const startButton = document.querySelector('#startButton'); // 開始ボタン
-const stopButton = document.querySelector('#stopButton'); // 停止ボタン
-const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
+    SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+    if (!'SpeechRecognition' in window) {
+      alert("あなたのブラウザはSpeech Recognition APIに未対応です。");
+    }
 
+    const asr = new SpeechRecognition(); // ASRインスタンスを生成
+    asr.lang = "ja-JP"; // 言語（日本語）
+    asr.interimResults = true; // 途中結果出力をオン
+    asr.continuous = true; // 継続入力をオン
 
-if (!'SpeechSynthesisUtterance' in window) {
-    alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
-}
-const tts = new SpeechSynthesisUtterance(); // TTSインスタンスを生成
-//tts.text = textForm.value; // テキストを設定
-tts.lang = "ja-JP"; // 言語(日本語)、英語の場合はen-US
-tts.rate = 1.0; // 速度
-tts.pitch = 1.0; // 声の高さ
-tts.volume = 1.0; // 音量
+    let output = ''; // 出力
 
-SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
-if (!'SpeechRecognition' in window) {
-    alert("あなたのブラウザはSpeech Recognition APIに未対応です。");
-}
-
-const asr = new SpeechRecognition(); // ASRインスタンスを生成
-asr.lang = "ja-JP"; // 言語（日本語）
-asr.interimResults = true; // 途中結果出力をオン
-asr.continuous = true; // 継続入力をオン
-
-let output = ''; // 出力
-
-// 応答の定義（ハッシュ）    
-var response = {
-    "あなたは誰ですか":"わたしはアレクサではありません",
-    "何歳ですか":"え、わたし、何歳にみえますか",
-    "元気":"元気ですよー",
-    "食べ物":"焼肉です",
-    "サークル":"入っていません",
-    "こん":"こんにちは"
-    
-};
+    // 応答の定義（ハッシュ）
+    var response = {
+      "あなたは誰ですか": "わたしはアレクサではありません",
+      "何歳ですか": "え、わたし、何歳にみえますか",
+      "元気": "元気ですよー",
+      "食べ物": "焼肉です",
+      "サークル": "入っていません",
+      "こん": "こんにちは"
+    };
 
 // ウエイクワードの定義
-var wake_word = "グーテンモルゲン";
+var wake_word1 = "音声対話";
+var wake_word2 = "ニコニコ";
 
 // 認識結果が出力されたときのイベントハンドラ
-asr.onresult = function(event){
+asr.onresult = function(event) {
     let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
     let transcript_previous = null; // 結果文字列（ひとつ前）
 
-    if(event.resultIndex > 0){
-        transcript_previous = event.results[event.resultIndex - 1][0].transcript;
+    if (event.resultIndex > 0) {
+      transcript_previous = event.results[event.resultIndex - 1][0].transcript;
     }
 
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
-      if(new RegExp(wake_word).test(transcript_previous)){
+      let judje = 0;
+      if (new RegExp(wake_word1).test(transcript_previous)) {
+        console.log("a")
         asr.abort(); // 音声認識を停止
         let answer;
         let keys = Object.keys(response);
-          keys.forEach(function(key) {
-            console.log(key + " : " + transcript.indexOf(key));
-            if(transcript.indexOf(key) > -1){
-              answer = response[key];
-            }
+        keys.forEach(function(key) {
+          console.log(key + " : " + transcript.indexOf(key));
+          if (transcript.indexOf(key) > -1) {
+            answer = response[key];
+            judje = 1;
+          }
         });
-        if(typeof answer == 'undefined'){
+        if (judje == 1) {
+          output += transcript + " => " + answer + '<br>'; // 応答結果の出力
+          tts.text = answer;
+          speechSynthesis.speak(tts); // 再生
+        }
+
+        if (typeof answer == 'undefined') {
+          // HTTPリクエストの準備
           var postdata = {
-          "id": "1234-1", // JSON-RPC2.0 id、値は任意で、指定した値がレスポンスのidになる。
-          "jsonrpc" : "2.0", // APIで固定
-          "method" : "jlp.nluservice.analyze", // APIで固定
-          "params" : { "q" : transcript }, // 解析対象のテキスト 
-        };
-		    var jsondata = JSON.stringify(postdata);
-	
-        const request = new XMLHttpRequest();
-        request.open('POST', queryURL, true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.responseType = 'json'; // レスポンスはJSON形式に変換
-        
-        // HTTPの状態が変化したときのイベントハンドラ
-        request.onreadystatechange = function() {
+            "id": "1234-1", // JSON-RPC2.0 id、値は任意で、指定した値がレスポンスのidになる。
+            "jsonrpc": "2.0", // APIで固定
+            "method": "jlp.nluservice.analyze", // APIで固定
+            "params": {
+              "q": transcript
+            }, // 解析対象のテキスト
+          };
+          var jsondata = JSON.stringify(postdata);
+
+          const request = new XMLHttpRequest();
+          request.open('POST', queryURL, true);
+          request.setRequestHeader('Content-Type', 'application/json');
+          request.responseType = 'json'; // レスポンスはJSON形式に変換
+
+          // HTTPの状態が変化したときのイベントハンドラ
+          request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               // readyState == 4 操作完了
               // status == 200 リクエスト成功（HTTPレスポンス）
-              
-            let res = this.response; // 結果はJSON形式
 
-            Object.keys(res.result).forEach(function (key) {
-              console.log(key + ": " + res.result[key])
-            });
-          
-            // METHOD が SAY のときのみ
-            if(res.result.METHOD == "SAY"){
-              var answer = res.result.PARAM_TEXT_TTS || res.result.PARAM_TEXT;
-              tts.text = answer;
+              let res = this.response; // 結果はJSON形式
+
+              Object.keys(res.result).forEach(function(key) {
+                console.log(key + ": " + res.result[key])
+              });
+
+              // METHOD が SAY のときのみ
+              if (res.result.METHOD == "SAY") {
+                var answer = res.result.PARAM_TEXT_TTS || res.result.PARAM_TEXT;
+                tts.text = answer;
 
                 // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
-                tts.onend = function(event){
-                    asr.start(); // 音声認識を再開
+                tts.onend = function(event) {
+                  asr.start(); // 音声認識を再開
                 }
-              
-              output += transcript + ' => ' + answer + '<br>';
-              resultOutput.innerHTML = output;
+
+                output += transcript + ' => ' + answer + '<br>';
+                resultOutput.innerHTML = output;
                 speechSynthesis.speak(tts); // 再生
-            }
-
-            output += transcript + " => " + answer + '<br>'; // 応答結果の出力
-                  
-        
-            tts.text = answer;
-            speechSynthesis.speak(tts); // 再生
-            // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
-
-            tts.onend = function(event){
+              } else {
                 asr.start(); // 音声認識を再開
+              }
             }
-
-            speechSynthesis.speak(tts); // 再生
-          }
+            
+          };
+          // HTTPリクエストの実行
+          request.send(jsondata);;
         }
+
+
+        tts.onend = function(event) {
+          asr.start(); // 音声認識を再開
+        }
+
+      }else if (new RegExp(wake_word2).test(transcript_previous)) { // wake_word2のとき
+        console.log("a")
+        asr.abort(); // 音声認識を停止
+        let query = transcript; // 検索クエリ
+        let url = "https://api.search.nicovideo.jp/api/v2/snapshot/video/contents/search?q=" + query + "&targets=title&fields=contentId,title,viewCounter,startTime&_sort=-viewCounter&_limit=10"; // ニコニコ動画apiのURL
+        const request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'json'; // レスポンスはJSON形式に変換
+
+        // HTTPの状態が変化したときのイベントハンドラ
+          request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              // readyState == 4 操作完了
+              // status == 200 リクエスト成功（HTTPレスポンス）
+
+              let res = this.response; // 結果はJSON形式
+              let videos = res.data; // 動画の配列
+              let answer = "ニコニコ動画で" + query + "を検索しました。人気順に10件の動画を紹介します。" + "\n"; // 応答結果の初期化
+              for (let i = 0; i < videos.length; i++) { // 動画の数だけ繰り返す
+                let video = videos[i]; // 動画の情報
+                answer += (i + 1) + "位: " + video.title + "\n"; // 動画のタイトルを追加
+                answer += "再生数: " + video.viewCounter + "\n"; // 動画の再生数を追加
+                answer += "\n"; // 改行を追加
+              }
+
+              // テキストエリアに結果を表示
+              resultOutput.innerHTML = answer;
+              tts.text = answer;
+              speechSynthesis.speak(tts); // 再生
+              // ニコニコ動画のリンクを開く
+              let video = videos[0];
+              let videoUrl = "https://www.nicovideo.jp/watch/" + video.contentId;
+              window.open(videoUrl, "_blank"); // 動画のサイトに新しいタブで遷移する
+            }
+          };
         // HTTPリクエストの実行
-		    request.send(jsondata);
+        request.send();
+      }
+
+      
+
     } else { // 結果がまだ未確定のとき
         output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
+      }
+      resultOutput.innerHTML = output + output_not_final;
     }
-    resultOutput.innerHTML = output + output_not_final;
-}
 
-// 開始ボタンのイベントハンドラ
-startButton.addEventListener('click', function() {
-    asr.start();
-})
+    // 開始ボタンのイベントハンドラ
+    startButton.addEventListener('click', function() {
+      asr.start();
+    })
 
-// 停止ボタンのイベントハンドラ
-stopButton.addEventListener('click', function() {
-    asr.abort()
-    asr.stop();
-})
-// Live2Dモデルの表示（サンプル）
-function loadLive2DModel() {
-  // モデルのファイルパス
-  var modelPath = 'C/Users/User/Downloads/miku/miku_t01.cmo3';
-
-  // モデルの読み込みと初期化
-  var live2dModel = new LAppModel();
-  live2dModel.load(modelPath);
-
-  // 描画領域の設定
-  var canvas = document.getElementById('live2d_canvas');
-  var width = canvas.clientWidth;
-  var height = canvas.clientHeight;
-  canvas.width = width;
-  canvas.height = height;
-
-  // モデルの描画
-  var live2dContext = new LAppLive2DManager();
-  live2dContext.init(canvas);
-  live2dContext.start(live2dModel);
-}
-
-// ページのロードが完了したらLive2Dモデルを表示
-window.addEventListener('load', function() {
-  loadLive2DModel();
-});
-</script>
+    // 停止ボタンのイベントハンドラ
+    stopButton.addEventListener('click', function() {
+      asr.abort()
+      asr.stop();
+    })
+  </script>
 
 </body>
+
 </html>
