@@ -56,6 +56,27 @@
     height: 40vh;
     border: none;
   }
+  #startButton:hover{
+    background-color: rgba(152, 207, 255, 0.8);
+  }
+  #stopButton:hover {
+    background-color: rgba(254, 164, 185, 0.8);
+  }
+  @keyframes buttonClickAnimation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+.button-click-animation {
+  animation: buttonClickAnimation 0.3s;
+}
   </style>
 </head>
 <body>
@@ -292,12 +313,26 @@ asr.onresult = function(event) {
 
     // 開始ボタンのイベントハンドラ
     startButton.addEventListener('click', function() {
+      startButton.classList.add('button-click-animation'); // アニメーション用のクラスを追加
+
+      // 0.3秒後にクラスを削除
+      setTimeout(function() {
+        startButton.classList.remove('button-click-animation');
+      }, 300);
+
       asr.start();
     })
 
     // 停止ボタンのイベントハンドラ
     stopButton.addEventListener('click', function() {
-      asr.abort()
+      stopButton.classList.add('button-click-animation'); // アニメーション用のクラスを追加
+
+      // 0.3秒後にクラスを削除
+      setTimeout(function() {
+        stopButton.classList.remove('button-click-animation');
+      }, 300);
+
+      asr.abort();
       asr.stop();
       wake_word_judge= "not";
     })
