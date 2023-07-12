@@ -6,31 +6,60 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript">
   <title>Spoken Dialog by Javascript</title>
   <style>
-    #resultOutput {
-      font-size: 48px;
-    }
-    #startButton {
-      background-color: blue;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin-right: 10px;
-      font-size: 48px;
-    }
-    #stopButton {
-      background-color: red;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin-right: 10px;
-      font-size: 48px;
-    }
+  body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  }
+
+  #resultOutput {
+    font-size: 20px;
+    height: 40%;
+    width: 100%;
+    border: 1px solid #000;
+    padding: 10px;
+  }
+
+  #startButton {
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-right: 10px;
+    font-size: 48px;
+  }
+
+  #stopButton {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-right: 10px;
+    font-size: 48px;
+  }
+
+  #commnt {
+    padding-left: 70%;
+    width: 100%;
+    height: 20bh;
+    border: none;
+  }
+
+  #frameContainer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40vh;
+    border: none;
+  }
   </style>
 </head>
 <body>
-  <h1>60266214西優太-課題：音声対話</h1>
+  <h1>ニコ動音声対話</h1>
   <p>
     <button id="startButton">start</button>
     <button id="stopButton">stop</button>
@@ -38,6 +67,17 @@
   <p>
     <div id="resultOutput"></div>
   </p>
+  <p>
+    <div id="commnt">
+        このWebアプリは音声対話アプリです。スタートボタンを押して話しかけてみてください。<br>
+        このアプリには機能が2つあり、あなたが初めに話す「選択ワード」で機能が変わります。<br>
+        機能1｜音声対話　アプリと話ができます　　　　　　　　 選択ワード｜音声対話<br>
+        機能2｜ニコニコ　ニコニコ動画の人気動画を検索できます 選択ワード｜ニコニコ<br>
+        Web Services by Yahoo! JAPAN （https://developer.yahoo.co.jp/sitemap/）<br>
+
+    </div>
+  </p>
+  <div id="frameContainer"></div>
   <script>
     const URL = "https://jlp.yahooapis.jp/NLUService/V2/analyze?appid="; // APIのリクエストURL
     const APPID = "dj00aiZpPUtnWmVVRWQ3akpZQiZzPWNvbnN1bWVyc2VjcmV0Jng9Yzc-"; // あなたのアプリケーションID
@@ -60,6 +100,7 @@
     const voices = window.speechSynthesis.getVoices();
     // Google日本語の音声を探す
     for (let voice of voices) {
+    //Google日本語という名前で、日本語のモデルを探索
       if (voice.name === "Google 日本語" && voice.lang === "ja-JP") {
         return voice; // 見つかったらvoiceを返す
       }
@@ -101,33 +142,43 @@ var wake_word2 = "ニコニコ";
 
 // 認識結果が出力されたときのイベントハンドラ
 asr.onresult = function(event) {
-    let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
-    let transcript_previous = null; // 結果文字列（ひとつ前）
+  let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
+  let transcript_previous = null; // 結果文字列（ひとつ前）
 
-    if (event.resultIndex > 0) {
-      transcript_previous = event.results[event.resultIndex - 1][0].transcript;
+  if (event.resultIndex > 0) {
+    transcript_previous = event.results[event.resultIndex - 1][0].transcript;
+  }
+
+  let output_not_final = '';
+  if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
+    if (new RegExp(wake_word1).test(transcript_previous)) {
+      wake_word_judge = wake_word1;
+      tts.text = "音声対話ですね？はい。承知しました。";
+      speechSynthesis.speak(tts); // 再生
     }
 
-    let output_not_final = '';
-    if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
-      let judje = 0;
-      if (new RegExp(wake_word1).test(transcript_previous)) {
-        console.log("a")
-        asr.abort(); // 音声認識を停止
-        let answer;
-        let keys = Object.keys(response);
-        keys.forEach(function(key) {
-          console.log(key + " : " + transcript.indexOf(key));
-          if (transcript.indexOf(key) > -1) {
-            answer = response[key];
-            judje = 1;
-          }
-        });
-        if (judje == 1) {
-          output += transcript + " => " + answer + '<br>'; // 応答結果の出力
-          tts.text = answer;
-          speechSynthesis.speak(tts); // 再生
+    if (new RegExp(wake_word2).test(transcript_previous)) {
+      wake_word_judge = wake_word2;
+      tts.text = "ニコニコですね？はい。承知しました。";
+      speechSynthesis.speak(tts); // 再生
+    }
+
+    if (wake_word_judge === wake_word1) {
+      console.log("a");
+      asr.abort(); // 音声認識を停止
+      let answer;
+      let keys = Object.keys(response);
+      keys.forEach(function(key) {
+        console.log(key + " : " + transcript.indexOf(key));
+        if (transcript.indexOf(key) > -1) {
+          answer = response[key];
         }
+      });
+      if (answer) {
+        output += transcript + " => " + answer + '<br>'; // 応答結果の出力
+        tts.text = answer;
+        speechSynthesis.speak(tts); // 再生
+      }
 
         if (typeof answer == 'undefined') {
           // HTTPリクエストの準備
@@ -185,8 +236,8 @@ asr.onresult = function(event) {
         tts.onend = function(event) {
           asr.start(); // 音声認識を再開
         }
-
-      }else if (new RegExp(wake_word2).test(transcript_previous)) { // wake_word2のとき
+      //機能2:ニコニコ
+      }else if (wake_word_judge === wake_word2) { // wake_word2のとき
         console.log("a")
         asr.abort(); // 音声認識を停止
         let query = transcript; // 検索クエリ
@@ -203,22 +254,28 @@ asr.onresult = function(event) {
 
               let res = this.response; // 結果はJSON形式
               let videos = res.data; // 動画の配列
-              let answer = "ニコニコ動画で" + query + "を検索しました。人気順に10件の動画を紹介します。" + "\n"; // 応答結果の初期化
+              let answer = "ニコニコ動画で" + query + "を検索しました。人気順に10件の動画を紹介します。" + "<br>"; // 応答結果の初期化
               for (let i = 0; i < videos.length; i++) { // 動画の数だけ繰り返す
                 let video = videos[i]; // 動画の情報
-                answer += (i + 1) + "位: " + video.title + "\n"; // 動画のタイトルを追加
-                answer += "再生数: " + video.viewCounter + "\n"; // 動画の再生数を追加
-                answer += "\n"; // 改行を追加
+                answer += (i + 1) + "位: " + video.title + " "; // 動画のタイトルを追加
+                answer += "再生数: " + video.viewCounter + " "; // 動画の再生数を追加
+                answer += "<br>"; // 改行を追加
               }
 
               // テキストエリアに結果を表示
               resultOutput.innerHTML = answer;
               tts.text = answer;
               speechSynthesis.speak(tts); // 再生
-              // ニコニコ動画のリンクを開く
+              // ニコニコ動画のリンクをiframeで開く
               let video = videos[0];
-              let videoUrl = "https://www.nicovideo.jp/watch/" + video.contentId;
-              window.open(videoUrl, "_blank"); // 動画のサイトに新しいタブで遷移する
+              var frameContainer = document.getElementById("frameContainer");
+              var openPageButton = document.getElementById("openPageButton");
+              var frame = document.createElement("iframe");
+              frame.style.width = "100%";
+              frame.style.height = "50vh"; // 画面の高さの50%に設定
+              frameContainer.appendChild(frame);
+              var videoUrl = "https://www.nicovideo.jp/watch/" + video.contentId;
+              frame.src = videoUrl;
             }
           };
         // HTTPリクエストの実行
@@ -243,11 +300,8 @@ asr.onresult = function(event) {
       asr.abort()
       asr.stop();
     })
+  
   </script>
-<!-- Yahoo!JAPANのAPIを利用したときはクレジット表記が必要 -->
-<p>
-Web Services by Yahoo! JAPAN （https://developer.yahoo.co.jp/sitemap/）
-</p>
 </body>
 
 </html>
