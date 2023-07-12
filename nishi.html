@@ -299,6 +299,7 @@ asr.onresult = function(event) {
     stopButton.addEventListener('click', function() {
       asr.abort()
       asr.stop();
+      wake_word_judge=0;
     })
   
   </script>
