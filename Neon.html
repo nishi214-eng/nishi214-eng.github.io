@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>NeonMonster</title>
+<script src="script.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!--==============レイアウトを制御する独自のCSSを読み込み===============-->
+<link rel="stylesheet" type="text/css" href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+<link rel="stylesheet" type="text/css" href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-1-7/css/6-1-7.css">
+<link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <style>
+  @charset "utf-8";
+  @supports (font-variation-settings: normal) {
+      :root {
+        font-family: 'Inter var', sans-serif;
+      }
+    }
+    /*==================================================
+    スライダーのためのcss
+    ===================================*/
+    .slider {/*横幅75%で左右に余白を持たせて中央寄せ*/
+        width:75%;
+        margin:0 auto;
+    }
+
+    .slider img {
+        width:40vw;/*スライダー内の画像を60vwにしてレスポンシブ化*/
+        height:auto;
+    }
+
+    .slider .slick-slide {
+      transform: scale(0.8);/*左右の画像のサイズを80%に*/
+      transition: all .5s;/*拡大や透過のアニメーションを0.5秒で行う*/
+      opacity: 0.5;/*透過50%*/
+    }
+
+    .slider .slick-slide.slick-center{
+      transform: scale(1);/*中央の画像のサイズだけ等倍に*/
+      opacity: 1;/*透過なし*/
+    }
+
+
+    /*矢印の設定*/
+
+    /*戻る、次へ矢印の位置*/
+    .slick-prev, 
+    .slick-next {
+        position: absolute;/*絶対配置にする*/
+        top: 42%;
+        cursor: pointer;/*マウスカーソルを指マークに*/
+        outline: none;/*クリックをしたら出てくる枠線を消す*/
+        border-top: 2px solid #666;/*矢印の色*/
+        border-right: 2px solid #666;/*矢印の色*/
+        height: 15px;
+        width: 15px;
+    }
+
+    .slick-prev {/*戻る矢印の位置と形状*/
+        left: -1.5%;
+        transform: rotate(-135deg);
+    }
+
+    .slick-next {/*次へ矢印の位置と形状*/
+        right: -1.5%;
+        transform: rotate(45deg);
+    }
+
+    /*ドットナビゲーションの設定*/
+
+    .slick-dots {
+        text-align:center;
+      margin:20px 0 0 0;
+    }
+
+    .slick-dots li {
+        display:inline-block;
+      margin:0 5px;
+    }
+
+    .slick-dots button {
+        color: transparent;
+        outline: none;
+        width:8px;/*ドットボタンのサイズ*/
+        height:8px;/*ドットボタンのサイズ*/
+        display:block;
+        border-radius:50%;
+        background:#ccc;/*ドットボタンの色*/
+    }
+
+    .slick-dots .slick-active button{
+        background:#333;/*ドットボタンの現在地表示の色*/
+    }
+
+
+    /*========= レイアウトのためのCSS ===============*/
+
+    body{
+      background:#eee;
+    }
+
+    ul{
+      margin:0;
+      padding: 0;
+      list-style: none;
+    }
+    .Gametitle{
+      color: #4e4e4e;
+      text-align: center;
+      text-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
+      font-family: Inter;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 69px; /* 107.813% */
+      letter-spacing: 6.24px;
+    }
+    .Concept{
+      color: #4e4e4e;
+      text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+      font-family: Inter;
+      font-size: 27px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 69px;
+      letter-spacing: 6.24px; 
+    }
+   
+    .article {
+      padding: 80px 0;
+    }
+
+    .article-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .article-title {
+      color: #4e4e4e;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .article-body {
+      color: #4e4e4e;
+      max-width: 900px;
+      margin: 0 auto;
+      margin-bottom: 80px;
+    }
+
+    .article-body h3 {
+      color: #4e4e4e;
+      position: relative;
+      font-size: 18px;
+      margin-bottom: 5px;
+      padding-left: 1em;
+    }
+
+    .article-body h3:not(:first-child) {
+      margin-top: 50px;
+    }
+
+    .article-body h3::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      content: "";
+      border-radius: 3px;
+      background-color: #333;
+    }
+    .article {
+      padding: 50px 0;
+    }
+
+    .article-body h3 {
+      color: #4e4e4e;
+      font-size: 27px;
+      padding-left: .8em;
+    }
+
+    .article-body h3:not(:first-child) {
+      margin-top: 30px;
+    }
+
+    .article-body p {
+      color: #4e4e4e;
+      font-size: 25px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+
+    a{
+      color: #333;
+    }
+    a:hover,
+    a:active{
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="Gametitle">
+    <p>NeonMonster</p>
+</div>
+<div class="Concept">
+  <p>ネオン調の街々を駆け抜ける3D育成レースゲーム</p>
+</div>
+<ul class="slider">
+  <li><img src="Neon.png" alt="1"></li>
+  <li><img src="Neon_2.png" alt="2"></li>
+  <li><img src="Neon_3.png" alt="3"></li>
+  <li><img src="Neon.png" alt="4"></li>
+</ul>
+<article class="article">
+  <div class="article-container">
+    <div class="article-body">
+      <h3>制作人数</h3>
+      <p>5人</p>
+      <h3>西の担当</h3>
+      <p>企画・マネジメント・3D</p>
+      <h3>制作状況</h3>
+      <p>鋭意制作中・今年8月にリリース予定</p>
+      <h3>エピソード</h3>
+      <p>ネオン×育成×レースをテーマに制作しています。<br>フォトリアル調にするかセルルック調にするかで1か月ほど揉めました。</p>
+    </div>
+  </div>
+</article>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-1-7/js/6-1-7.js"></script>
+</body>
+</html>
+
