@@ -41,7 +41,7 @@
 [chara_face name="amu" face="sad2" storage="chara/amu/sad2.png"]
 
 ;medo
-[chara_new  name="medo"  storage="chara/medo/normal.png" jname="？？？" ]
+[chara_new  name="medo"  storage="chara/medo/normal.png" jname="メド" ]
 ;キャラクターの表情登録
 [chara_face name="medo" face="worry" storage="chara/medo/worry.png"]
 [chara_face name="medo" face="angry" storage="chara/medo/angry.png"]
