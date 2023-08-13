@@ -1,0 +1,32 @@
+<div>
+
+	<div class="display_menu">
+
+		<div class="menu_item" style="float:right; margin: 0px 0px 0 0;">
+			<img class="menu_close" src="tyrano/images/system/ba.png">
+		</div>
+
+		<div style="clear:both"></div>
+
+		<div class="log_body"></div>
+
+	</div>
+
+	<img class="img_label img_label_backlog" src="tyrano/images/system/label_backlog.png"
+		style="left: 0px; top: 0px; position: absolute;">
+
+	<script class="menu_close">
+		var tmp_src = "";
+
+		$(".menu_item").hover(function () {
+			tmp_src = $(this).find("img").attr("src");
+			var img_src = tmp_src.replace(".png", "2.png");
+			$(this).find("img").attr("src", img_src);
+		},
+			function () {
+
+				//もとにもどす
+				$(this).find("img").attr("src", tmp_src);
+			});
+	</script>
+</div>
