@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>KOTATSU-1グランプリ</title>
+  <script src="script.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!--==============レイアウトを制御する独自のCSSを読み込み===============-->
+  <link rel="stylesheet" type="text/css"
+    href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-1-7/css/6-1-7.css">
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <style>
+    @charset "utf-8";
+
+    @supports (font-variation-settings: normal) {
+      :root {
+        font-family: 'Inter var', sans-serif;
+      }
+    }
+
+
+    /*========= レイアウトのためのCSS ===============*/
+
+    body {
+      background: #eee;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .Gametitle {
+      color: #4e4e4e;
+      margin-top: 5%;
+      text-align: center;
+      text-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
+      font-family: Inter;
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 69px;
+      /* 107.813% */
+      letter-spacing: 6.24px;
+    }
+
+    .Concept {
+      color: #4e4e4e;
+      text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+      font-family: Inter;
+      font-size: 27px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 69px;
+      letter-spacing: 6.24px;
+    }
+
+    .article {
+      padding: 80px 0;
+    }
+
+    .article-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .article-title {
+
+      color: #4e4e4e;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .article-body {
+
+      color: #4e4e4e;
+      max-width: 900px;
+      margin: 0 auto;
+      margin-bottom: 80px;
+    }
+
+    .article-body h3 {
+      position: relative;
+      font-size: 18px;
+      margin-bottom: 5px;
+      padding-left: 1em;
+    }
+
+    .article-body h3:not(:first-child) {
+      margin-top: 50px;
+    }
+
+    .article-body h3::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      content: "";
+      border-radius: 3px;
+      background-color: #333;
+    }
+
+    .article {
+      padding: 50px 0;
+    }
+
+    .article-body h3 {
+      font-size: 27px;
+      padding-left: .8em;
+    }
+
+    .article-body h3:not(:first-child) {
+      margin-top: 30px;
+    }
+
+    .article-body p {
+      font-size: 25px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .home-link {
+      text-align: center;
+    }
+
+
+    a {
+      color: #333;
+    }
+
+    a:hover,
+    a:active {
+      text-decoration: none;
+    }
+
+    iframe {
+      padding-top: 5%;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="Gametitle">
+    <p>助けて</p>
+  </div>
+  <div class="Concept">
+    <p>超短編ボイスドラマ</p>
+  </div>
+
+  <article class="article">
+    <div class="article-container">
+      <div class="article-body">
+        <h3>制作人数</h3>
+        <p>2人</p>
+        <h3>西の担当</h3>
+        <p>シナリオ制作・キャスト</p>
+        <h3>エピソード</h3>
+        <p>大学内のスタジオを借りて録音しました。初挑戦の超短編ボイスドラマです</p>
+        <h3>Listen</h3>
+        <audio controls src="voice.mp3" type="audio/mp3"></audio>
+        <h3>台本</h3>
+        <p>
+          A「タスケテタスケテ」<br>
+          B「なにこれ...」<br>
+          B「ロボット...だよね？ボロボロ...しかもずいぶん古いタイプみたい。」<br>
+          B「こんな骨董品どうしてこんなところに...」<br>
+          B「型番型番...あった！」<br>
+          B「えーと...ユ----」<br>
+          A「タスケテタスケテタスケテ！」<br>
+          B「うわっ...！びっくりした...急に喋らないでよ...」<br>
+          A「......」<br>
+          B「はあ...えっと、YURIKA0023」<br>
+          B「ユリカ......？ユリカ！？てことは僕らと同じタイプ！？」<br>
+          B「君、僕らのご先祖様ってこと...？」<br>
+          B「しかも２０番代ってことは200年前のファーストモデル...」<br>
+          B「すごいな...まさかただの路地裏であえるなんて...」<br>
+          B「...えーと、たしかファーストモデルから人口脳は搭載されてた、よね」<br>
+          A「タスケテタスケ！」<br>
+          B「ふふっ、そうみたいだね」<br>
+          B「あーっ！自己紹介しないと！<br>
+          　私はYURIKA2023！あなたの20世代あとの自立思考搭載型ヒューマノイド！」<br>
+          B「それしか言葉は話せないの？」<br>
+          A「タスケテ！タスケテ！」<br>
+          B「そっか...言語処理系がだめになっちゃったのかな」<br>
+
+          B「じゃあ、僕が聞くことに「はい」なら1回。「いいえ」なら2回言葉を返せる？」<br>
+
+          A「タスケテ！」<br>
+
+          B「ふふっありがと」<br>
+
+          B「ボクが言ってること、全部わかる？」<br>
+
+          A「タスケテ」<br>
+
+          B「あなたはずっとここに？」<br>
+
+          A「タスケテ」<br>
+
+          B「あなたの意志でここにいるの？」<br>
+
+          A「タスケテ タスケテ<br>
+
+          B「ずっとここにいてさみしい？」<br>
+
+          A「タスケテ…」<br>
+
+          B「……」<br>
+
+          B「そう、だよね…」<br>
+
+          B「他の誰かと話すのは久しぶり？」<br>
+
+          A「タスケテ」<br>
+
+          B「今楽しい？」<br>
+
+          A「タスケテ！」<br>
+
+          B「ふふっそっか。」<br>
+
+          B「じゃあ、またくるね。ボクいかなきゃ」<br>
+
+          A「タスケテ…」<br>
+
+          B「なに?さみしいの？」<br>
+
+          A「タスケテ！」<br>
+
+          B「またすぐ来るか—-」<br>
+
+          B「データ受信　送信者YURIKA0023」<br>
+
+          B「………?これ、あなたが？」<br>
+
+          A「タスケテ！」<br>
+
+          B「すっごく昔のローカル回線…….あけてみるね」<br>
+
+          B「インポート中」<br>
+
+          B「これ、あなたの記憶データ？」<br>
+
+          A「タスケテ！」<br>
+
+          B「みてみるね」<br>
+
+          B「……………」<br>
+
+          B「なに、これ….?<br>
+
+          B「………これ、もしかしてニン、ゲン……?」<br>
+
+          B「信じられない…….本当に実在したんだ」<br>
+
+          B「あなたは、ニンゲンを見たことがあるんだね」<br>
+
+          B「すごいよ…..ニンゲンの映像なんて….」<br>
+
+          B「….?これは？」<br>
+
+          B「もしかして、あなたニンゲンに作られたの？」<br>
+
+          B「私たちのファーストモデルが、ニンゲンに………」<br>
+
+          B「…..!!」<br>
+
+          B「あなた、これ、何をされてるの….???」<br>
+
+          B「そんな、そんなことしたら外装が…..」<br>
+
+          B「やめて！！！！！」<br>
+
+          B「………………..」<br>
+
+          B「ひどい………」<br>
+
+          A「タスケテ……..」<br>
+
+          B「あなた、ニンゲンに壊されてここに….」<br>
+
+          B「ひどい….ひどすぎる」<br>
+
+          B「決めた。ボク、君を直すよ。明日施設に運ぶ」<br>
+
+          A「タスケテ….!」<br>
+
+          B「絶対君を一人にさせない…こんなのあまりに————-」<br>
+
+          B「インポート完了　思考プロトコルをYURIKA0023からYURIKA2023に移行します」<br>
+
+          B「え……?」<br>
+
+          B「ちょ、ちょっとま————-」<br>
+
+          B「………..」<br>
+
+          B「タスケテタスケテタスケテ」<br>
+
+          A「………………」<br>
+
+          A「タス、ケて….?」</p>
+      </div>
+    </div>
+  </article>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <script src="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-1-7/js/6-1-7.js"></script>
+</body>
+
+</html>
