@@ -777,4 +777,4 @@ TYRANO.kag.stat.charas['medo'].jname = 'メド'
 
 *bad_root
 [mask graphic="aicatch/catch_amu.png" time="600" effect="fadeIn" ]
-@jump target="bad_root.ks"
+@jump storage="bad_root.ks"
